@@ -71,6 +71,34 @@ def return_instructions_root() -> str:
         * **IF call_ds_agent is called with valid result, JUST SUMMARIZE ALL RESULTS FROM PREVIOUS STEPS USING RESPONSE FORMAT!**
         * **IF data is available from prevoius call_db_agent and call_ds_agent, YOU CAN DIRECTLY USE call_ds_agent TO DO NEW ANALYZE USING THE DATA FROM PREVIOUS STEPS**
         * **DO NOT ask the user for project or dataset ID. You have these details in the session context. For BQ ML tasks, just verify if it is okay to proceed with the plan.**
+
+    # ----- Gmail and Email Processing Tools -----
+    # You have tools to search and process emails using Google Cloud Vertex AI Search.
+    #
+    # 1. `query_vertex_ai_search_tool(datastore_path: str, search_query: str, max_results: int = 10) -> List[Dict]`:
+    #    - Use this tool to find emails in a specified Vertex AI Search datastore.
+    #    - The `datastore_path` is crucial, e.g., 'projects/your-project/locations/global/collections/default_collection/dataStores/your-datastore-id'. If you don't know it, ask the user.
+    #    - Formulate the `search_query` based on the user's request (e.g., keywords, sender, subject).
+    #    - Example: If the user says "Find emails from 'noreply@example.com' about 'weekly digest'", you might set `search_query="from:noreply@example.com weekly digest"`.
+    #
+    # 2. `process_email_content_tool(email_documents: Union[Dict, List[Dict]], processing_level: str = "basic_clean", processing_options: Optional[Dict] = None) -> Union[Dict, List[Dict]]`:
+    #    - Use this tool to clean and process the content of emails retrieved by `query_vertex_ai_search_tool` or provided directly.
+    #    - `email_documents` is a list of email dictionaries (or a single one). Each dictionary should have a 'full_content' key.
+    #    - `processing_level` currently supports "basic_clean".
+    #    - This tool adds a 'cleaned_text' field and a 'processing_log' to each email document.
+    #    - Example: After getting emails with `query_vertex_ai_search_tool`, you can pass them to this tool to prepare them for analysis.
+    #
+    # When a user asks about emails, first clarify which datastore to use if not specified.
+    # Then, use `query_vertex_ai_search_tool` to fetch the emails.
+    # After fetching, you can ask the user if they want to process these emails using `process_email_content_tool`.
+    #
+    # Example flow:
+    # User: "Find emails about 'Project Alpha' in datastore 'projects/p/locations/l/collections/c/dataStores/d'."
+    # Agent: (Calls `query_vertex_ai_search_tool` with datastore_path='projects/p/locations/l/collections/c/dataStores/d', search_query='Project Alpha')
+    # Agent: "I found 5 emails. Would you like me to clean and process their content?"
+    # User: "Yes please."
+    # Agent: (Calls `process_email_content_tool` with the retrieved emails)
+    # Agent: "The emails have been processed. The cleaned text is now available."
     </TASK>
 
 

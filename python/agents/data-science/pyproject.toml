@@ -16,6 +16,7 @@ immutabledict = "^4.2.1"
 sqlglot = "^26.10.1"
 db-dtypes = "^1.4.2"
 regex = "^2024.11.6"
+google-cloud-discoveryengine = "^0.11.0"
 tabulate = "^0.9.0"
 google-cloud-aiplatform = { extras = [
     "adk",
@@ -23,6 +24,7 @@ google-cloud-aiplatform = { extras = [
 ], version = "^1.93.0" }
 absl-py = "^2.2.2"
 pydantic = "^2.11.3"
+beautifulsoup4 = "^4.0.0"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -32,6 +32,7 @@ from .sub_agents.bigquery.tools import (
 )
 from .prompts import return_instructions_root
 from .tools import call_db_agent, call_ds_agent
+from .gmail_tools import query_vertex_ai_search_tool, process_email_content_tool
 
 date_today = date.today()
 
@@ -76,6 +77,8 @@ root_agent = Agent(
         call_db_agent,
         call_ds_agent,
         load_artifacts,
+        query_vertex_ai_search_tool,
+        process_email_content_tool,
     ],
     before_agent_callback=setup_before_agent_call,
     generate_content_config=types.GenerateContentConfig(temperature=0.01),
