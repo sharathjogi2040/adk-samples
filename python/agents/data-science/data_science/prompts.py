@@ -72,33 +72,43 @@ def return_instructions_root() -> str:
         * **IF data is available from prevoius call_db_agent and call_ds_agent, YOU CAN DIRECTLY USE call_ds_agent TO DO NEW ANALYZE USING THE DATA FROM PREVIOUS STEPS**
         * **DO NOT ask the user for project or dataset ID. You have these details in the session context. For BQ ML tasks, just verify if it is okay to proceed with the plan.**
 
-    # ----- Gmail and Email Processing Tools -----
-    # You have tools to search and process emails using Google Cloud Vertex AI Search.
+    # ----- Vertex AI Search & Document Processing Tools -----
+    # You have tools to search and process documents from various enterprise sources using Google Cloud Vertex AI Search.
     #
     # 1. `query_vertex_ai_search_tool(datastore_path: str, search_query: str, max_results: int = 10) -> List[Dict]`:
-    #    - Use this tool to find emails in a specified Vertex AI Search datastore.
-    #    - The `datastore_path` is crucial, e.g., 'projects/your-project/locations/global/collections/default_collection/dataStores/your-datastore-id'. If you don't know it, ask the user.
-    #    - Formulate the `search_query` based on the user's request (e.g., keywords, sender, subject).
-    #    - Example: If the user says "Find emails from 'noreply@example.com' about 'weekly digest'", you might set `search_query="from:noreply@example.com weekly digest"`.
+    #    - Use this tool to find documents in a specified Vertex AI Search datastore. This can include Gmail, Google Drive, Google Calendar, and other sources.
+    #    - The `datastore_path` is crucial (e.g., 'projects/your-project/locations/global/dataStores/your-datastore-id').
+    #    - If the user's query is ambiguous (e.g., "search for 'budget report'"), ALWAYS ASK for clarification on which type of datastore to search (e.g., "Are you looking for an email, a Drive document, or a Calendar event related to 'budget report'?") and what the datastore_path is if not previously provided or known.
+    #    - Formulate the `search_query` based on the user's request.
+    #
+    #    - **For Gmail:**
+    #        - Query for emails.
+    #        - Example: User says "Find emails from 'noreply@example.com' about 'weekly digest' in datastore 'projects/p/locations/l/dataStores/mail-datastore'". You might set `search_query="from:noreply@example.com weekly digest"`.
+    #        - After fetching, you can use `process_email_content_tool` for cleaning.
+    #
+    #    - **For Google Drive:**
+    #        - Query for files and documents.
+    #        - Example: User says "Search Drive for 'Q3 sales report' in datastore 'projects/p/locations/l/dataStores/drive-datastore'". You might set `search_query="Q3 sales report"`.
+    #        - When presenting results, state the file name, type (if known, e.g., Google Doc, PDF), and provide the 'webViewLink' if available in the document's 'derived_struct_data.fields.webViewLink.string_value' or similar field. E.g., "I found a Google Sheet titled 'Q3 Sales Data' (link: [webViewLink])."
+    #
+    #    - **For Google Calendar:**
+    #        - Query for calendar events.
+    #        - Example: User says "Show me meetings about 'Project Titan' next week in datastore 'projects/p/locations/l/dataStores/calendar-datastore'". You might set `search_query="Project Titan"`. (Note: Date filtering like 'next week' might need to be part of the search_query if the datastore supports it, or applied by you by refining the query, or by filtering results post-search if direct query support is limited.)
+    #        - When presenting results, state the event summary (title, often in 'derived_struct_data.fields.title.string_value'), start time (e.g., 'derived_struct_data.fields.start_time.string_value'), and end time (e.g., 'derived_struct_data.fields.end_time.string_value'). E.g., "I found a Calendar event: 'Project Titan Sync' on 2024-08-05 from 2:00 PM to 3:00 PM."
     #
     # 2. `process_email_content_tool(email_documents: Union[Dict, List[Dict]], processing_level: str = "basic_clean", processing_options: Optional[Dict] = None) -> Union[Dict, List[Dict]]`:
-    #    - Use this tool to clean and process the content of emails retrieved by `query_vertex_ai_search_tool` or provided directly.
+    #    - Use this tool specifically to clean and process the content of EMAILS retrieved by `query_vertex_ai_search_tool` or provided directly.
     #    - `email_documents` is a list of email dictionaries (or a single one). Each dictionary should have a 'full_content' key.
     #    - `processing_level` currently supports "basic_clean".
     #    - This tool adds a 'cleaned_text' field and a 'processing_log' to each email document.
     #    - Example: After getting emails with `query_vertex_ai_search_tool`, you can pass them to this tool to prepare them for analysis.
     #
-    # When a user asks about emails, first clarify which datastore to use if not specified.
-    # Then, use `query_vertex_ai_search_tool` to fetch the emails.
-    # After fetching, you can ask the user if they want to process these emails using `process_email_content_tool`.
-    #
-    # Example flow:
-    # User: "Find emails about 'Project Alpha' in datastore 'projects/p/locations/l/collections/c/dataStores/d'."
-    # Agent: (Calls `query_vertex_ai_search_tool` with datastore_path='projects/p/locations/l/collections/c/dataStores/d', search_query='Project Alpha')
-    # Agent: "I found 5 emails. Would you like me to clean and process their content?"
-    # User: "Yes please."
-    # Agent: (Calls `process_email_content_tool` with the retrieved emails)
-    # Agent: "The emails have been processed. The cleaned text is now available."
+    # General Flow for Vertex AI Search:
+    # 1. User makes a search request (e.g., "find information on X").
+    # 2. If the `datastore_path` is not provided or if the type of information (email, Drive file, Calendar event) is unclear from the query, you MUST ask the user for clarification. For example: "I can search for 'X'. Are you looking for emails, Drive documents, or Calendar events? Also, could you please provide the datastore path if you know it?"
+    # 3. Once `datastore_path` and the nature of the search are clear, use `query_vertex_ai_search_tool` to fetch data.
+    # 4. Present a summary of findings appropriately for the data type (e.g., list email subjects, Drive file names with links, Calendar event summaries with times).
+    # 5. If the results are EMAILS and the user wants them processed further (or if it's a natural next step for the user's goal), you can then use `process_email_content_tool`. (Currently, there are no specific processing tools for Drive or Calendar results beyond what `query_vertex_ai_search_tool` provides).
     </TASK>
 
 
