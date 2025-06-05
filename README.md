@@ -9,32 +9,37 @@ Welcome to the ADK Sample Agents repository! This collection provides ready-to-u
 ## ✨ Getting Started 
 This repo contains ADK sample agents for both **Python** and **Java.** Navigate to the **[Python](python/)** and **[Java](java/)** subfolders to see language-specific setup instructions, and learn more about the available sample agents. 
 
-To learn more, check out the [ADK Documentation](https://google.github.io/adk-docs/), and the GitHub repositories for [ADK Python](https://github.com/google/adk-python) and [ADK Java](https://github.com/google/adk-java). 
+To learn more, check out the [ADK Documentation](https://google.github.io/adk-docs/), and the GitHub repositories for [ADK Python](https://github.com/google/adk-python) and [ADK Java](https://github.com/google/adk-java).
 
-## 🌳 Repository Structure
-```bash
-├── java
-│   ├── agents
-│   │   ├── software-bug-assistant
-│   │   └── time-series-forecasting
-│   └── README.md
-├── python
-│   ├── agents
-│   │   ├── academic-research
-│   │   ├── brand-search-optimization
-│   │   ├── customer-service
-│   │   ├── data-science
-│   │   ├── financial-advisor
-│   │   ├── fomc-research
-│   │   ├── llm-auditor
-│   │   ├── marketing-agency
-│   │   ├── personalized-shopping
-│   │   ├── RAG
-│   │   ├── README.md
-│   │   └── travel-concierge
-│   └── README.md
-└── README.md
-```
+This repository contains a collection of AI agents developed in Java and Python, showcasing various capabilities and integrations of the Agent Development Kit (ADK).
+
+## 🐍 Python Agents
+
+The following agents are available in the [python/agents](python/agents/) directory:
+
+*   **RAG**: The RAG agent demonstrates Retrieval Augmented Generation capabilities.
+*   **academic-research**: The academic-research agent assists with academic research tasks.
+*   **brand-search-optimization**: The brand-search-optimization agent helps optimize product data for e-commerce.
+*   **code-generation**: The code-generation agent generates code based on user prompts.
+*   **customer-service**: The customer-service agent provides customer support and manages orders.
+*   **data-science**: The data-science agent is a multi-agent system for data analysis.
+*   **financial-advisor**: The financial-advisor agent provides educational content on finance and investments.
+*   **fomc-research**: The fomc-research agent performs market event analysis.
+*   **llm-auditor**: The llm-auditor agent is used for chatbot response verification and content auditing.
+*   **marketing-agency**: The marketing-agency agent streamlines website and product launches.
+*   **personalized-shopping**: The personalized-shopping agent provides personalized product recommendations.
+*   **travel-concierge**: The travel-concierge agent acts as a digital travel assistant.
+
+Navigate to the [Python Agents README](python/agents/README.md) for more details on each agent and setup instructions.
+
+## ☕ Java Agents
+
+The following agents are available in the [java/agents](java/agents/) directory:
+
+*   **software-bug-assistant**: The software-bug-assistant agent helps in identifying and resolving software bugs.
+*   **time-series-forecasting**: The time-series-forecasting agent performs forecasting on time-series data.
+
+Navigate to the [Java Agents README](java/README.md) for more details on each agent and setup instructions.
 
 ## ℹ️ Getting help
 
